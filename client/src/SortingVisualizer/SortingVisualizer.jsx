@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "../App.css";
 import "./SortingVisualizer.css";
-import { mergeSort } from "./mergeSort.js";
+import { mergeSort, getMergeSortAnimations } from "./mergeSort.js";
 
 const num_array_bars = 100;
 
@@ -26,9 +26,8 @@ export default class SortingVisualizer extends Component {
   }
 
   mergeSort() {
-    console.log(this.state.array);
-    const array1 = mergeSort(this.state.array);
-    console.log(array1);
+    const animations = getMergeSortAnimations(this.state.array);
+    console.log(animations);
   }
 
   render() {
