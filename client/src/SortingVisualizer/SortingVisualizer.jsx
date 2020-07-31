@@ -4,17 +4,14 @@ import "./SortingVisualizer.css";
 import { getMergeSortAnimations } from "./mergeSort.js";
 import { getBubbleSortAnimations } from "./bubbleSort.js";
 import { getQuickSortAnimations } from "./quickSort.js";
+import Slider from "@material-ui/core/Slider";
+import Typography from "@material-ui/core/Typography";
 
-const num_array_bars = 250;
 const max_height_bar = 600;
 
 const primary_color = "turquoise";
 const secondary_color = "red";
 const finish_color = "lawngreen";
-
-const merge_sort_speed = 5;
-const bubble_sort_speed = 0.75;
-const quick_sort_speed = 10;
 
 export default class SortingVisualizer extends Component {
   constructor(props) {
@@ -22,6 +19,9 @@ export default class SortingVisualizer extends Component {
     this.state = {
       array: [],
       timeouts: [],
+      array_size: 200,
+      speed: 3,
+      isRunning: false,
     };
   }
 
@@ -30,6 +30,13 @@ export default class SortingVisualizer extends Component {
   }
 
   cancelSort() {
+    //sliders
+    const sliders = document.getElementsByClassName("slider");
+    console.log(sliders);
+    sliders[0].disabled = false;
+    sliders[1].disabled = false;
+
+    //buttons
     const buttons = document.getElementsByClassName("button");
     buttons[0].disabled = false; //generate array button
     buttons[1].disabled = false; //merge sort button
@@ -43,6 +50,12 @@ export default class SortingVisualizer extends Component {
   }
 
   resetArray() {
+    //sliders
+    const sliders = document.getElementsByClassName("slider");
+    sliders[0].disabled = false;
+    sliders[1].disabled = false;
+
+    //buttons
     const buttons = document.getElementsByClassName("button");
     buttons[0].disabled = false; //generate array button
     buttons[1].disabled = false; //merge sort button
@@ -51,7 +64,7 @@ export default class SortingVisualizer extends Component {
     buttons[4].disabled = true; //cancel sort button
     const arrayBars = document.getElementsByClassName("array-bar");
     const array = [];
-    for (let i = 0; i < num_array_bars; i++) {
+    for (let i = 0; i < this.state.array_size; i++) {
       array.push(randomIntFromInterval(10, max_height_bar));
     }
     this.setState({ array });
@@ -61,6 +74,12 @@ export default class SortingVisualizer extends Component {
   }
 
   bubbleSort() {
+    //sliders
+    const sliders = document.getElementsByClassName("slider");
+    sliders[0].disabled = true;
+    sliders[1].disabled = true;
+
+    //buttons
     const buttons = document.getElementsByClassName("button");
     buttons[0].disabled = true; //generate array button
     buttons[1].disabled = true; //merge sort button
@@ -100,7 +119,7 @@ export default class SortingVisualizer extends Component {
           setTimeout(() => {
             barOneStyle.backgroundColor = color;
             barTwoStyle.backgroundColor = color;
-          }, i * bubble_sort_speed)
+          }, i * this.state.speed)
         );
       } else {
         //pushing a timeout to change the height of the bar
@@ -110,7 +129,7 @@ export default class SortingVisualizer extends Component {
             const barOneStyle = arrayBars[barOneIdx].style;
             const height = newHeight + "px";
             barOneStyle.height = height;
-          }, i * bubble_sort_speed)
+          }, i * this.state.speed)
         );
       }
     }
@@ -121,19 +140,23 @@ export default class SortingVisualizer extends Component {
       timeouts.push(
         setTimeout(() => {
           arrayBars[i].style.backgroundColor = finish_color;
-        }, animations.length * bubble_sort_speed + i * 2)
+        }, animations.length * this.state.speed + i * 2)
       );
     }
 
     //changing the buttons back to enabled
     timeouts.push(
       setTimeout(() => {
+        //sliders
+        sliders[0].disabled = false;
+        sliders[1].disabled = false;
+        //buttons
         buttons[0].disabled = false;
         buttons[1].disabled = true;
         buttons[2].disabled = true;
         buttons[3].disabled = true;
         buttons[4].disabled = true;
-      }, animations.length * bubble_sort_speed + arrayBars.length * 2)
+      }, animations.length * this.state.speed + arrayBars.length * 2)
     );
     //setting the state of the timeouts
     // eslint-disable-next-line
@@ -141,6 +164,12 @@ export default class SortingVisualizer extends Component {
   }
 
   mergeSort() {
+    //sliders
+    const sliders = document.getElementsByClassName("slider");
+    sliders[0].disabled = true;
+    sliders[1].disabled = true;
+
+    //buttons
     const buttons = document.getElementsByClassName("button");
     buttons[0].disabled = true; //generate array button
     buttons[1].disabled = true; //merge sort button
@@ -180,7 +209,7 @@ export default class SortingVisualizer extends Component {
           setTimeout(() => {
             barOneStyle.backgroundColor = color;
             barTwoStyle.backgroundColor = color;
-          }, i * merge_sort_speed)
+          }, i * this.state.speed)
         );
       } else {
         //pushing a timeout to change the height of the bar
@@ -190,7 +219,7 @@ export default class SortingVisualizer extends Component {
             const barOneStyle = arrayBars[barOneIdx].style;
             const height = newHeight + "px";
             barOneStyle.height = height;
-          }, i * merge_sort_speed)
+          }, i * this.state.speed)
         );
       }
     }
@@ -201,19 +230,24 @@ export default class SortingVisualizer extends Component {
       timeouts.push(
         setTimeout(() => {
           arrayBars[i].style.backgroundColor = finish_color;
-        }, animations.length * merge_sort_speed + i * 2)
+        }, animations.length * this.state.speed + i * 2)
       );
     }
 
     //changing the buttons back to enabled
     timeouts.push(
       setTimeout(() => {
+        //sliders
+        sliders[0].disabled = false;
+        sliders[1].disabled = false;
+
+        //buttons
         buttons[0].disabled = false;
         buttons[1].disabled = true;
         buttons[2].disabled = true;
         buttons[3].disabled = true;
         buttons[4].disabled = true;
-      }, animations.length * merge_sort_speed + arrayBars.length * 2)
+      }, animations.length * this.state.speed + arrayBars.length * 2)
     );
     //setting the state of the timeouts
     // eslint-disable-next-line
@@ -221,6 +255,11 @@ export default class SortingVisualizer extends Component {
   }
 
   quickSort() {
+    //sliders
+    const sliders = document.getElementsByClassName("slider");
+    sliders[0].disabled = true;
+    sliders[1].disabled = true;
+
     const buttons = document.getElementsByClassName("button");
     buttons[0].disabled = true; //generate array button
     buttons[1].disabled = true; //merge sort button
@@ -259,7 +298,7 @@ export default class SortingVisualizer extends Component {
           setTimeout(() => {
             barOneStyle.backgroundColor = color;
             barTwoStyle.backgroundColor = color;
-          }, i * quick_sort_speed)
+          }, i * this.state.speed)
         );
       } else {
         //pushing a timeout to change the height of the bar
@@ -269,7 +308,7 @@ export default class SortingVisualizer extends Component {
             const barOneStyle = arrayBars[barOneIdx].style;
             const height = newHeight + "px";
             barOneStyle.height = height;
-          }, i * quick_sort_speed)
+          }, i * this.state.speed)
         );
       }
     }
@@ -280,24 +319,37 @@ export default class SortingVisualizer extends Component {
       timeouts.push(
         setTimeout(() => {
           arrayBars[i].style.backgroundColor = finish_color;
-        }, animations.length * quick_sort_speed + i * 2)
+        }, animations.length * this.state.speed + i * 2)
       );
     }
 
     //changing the buttons back to enabled
     timeouts.push(
       setTimeout(() => {
+        //sliders
+        sliders[0].disabled = false;
+        sliders[1].disabled = false;
+
+        //buttons
         buttons[0].disabled = false;
         buttons[1].disabled = true;
         buttons[2].disabled = true;
         buttons[3].disabled = true;
         buttons[4].disabled = true;
-      }, animations.length * quick_sort_speed + arrayBars.length * 2)
+      }, animations.length * this.state.speed + arrayBars.length * 2)
     );
     //setting the state of the timeouts
     // eslint-disable-next-line
     this.state.timeouts = timeouts;
   }
+
+  handleChangeSize = (event, newValue) => {
+    this.setState({ array_size: newValue });
+  };
+
+  handleChangeSpeed = (event, newValue) => {
+    this.setState({ speed: newValue });
+  };
 
   render() {
     const { array } = this.state;
@@ -323,6 +375,17 @@ export default class SortingVisualizer extends Component {
         ></div>
         <br></br>
         <div className="footer">
+          <div className="slider-div">
+            <Typography>Size of Array</Typography>
+            <Slider
+              className="slider"
+              onChange={this.handleChangeSize}
+              aria-labelledby="continuous-slider"
+              min={10}
+              max={400}
+              defaultValue={250}
+            />
+          </div>
           <button className="button" onClick={() => this.resetArray()}>
             Generate New Array
           </button>
@@ -338,6 +401,17 @@ export default class SortingVisualizer extends Component {
           <button className="button" onClick={() => this.cancelSort()}>
             Cancel
           </button>
+          <div className="slider-div">
+            <Typography>Speed</Typography>
+            <Slider
+              className="slider"
+              onChange={this.handleChangeSpeed}
+              aria-labelledby="continuous-slider"
+              min={0.1}
+              max={10}
+              defaultValue={3}
+            ></Slider>
+          </div>
         </div>
       </div>
     );

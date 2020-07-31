@@ -54,6 +54,21 @@
   margin: 0px 5px;
 }
 
+.slider-div {
+  border: none;
+  color: white;
+  padding: 0px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+  margin: 0px 5px;
+  width: 250px;
+  height: auto;
+  position: relative;
+  top: 10px;
+}
+
 html {
   background-color: black;
 }
