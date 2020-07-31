@@ -4,14 +4,14 @@ import "./SortingVisualizer.css";
 import { getMergeSortAnimations } from "./mergeSort.js";
 import { getBubbleSortAnimations } from "./bubbleSort.js";
 
-const num_array_bars = 300;
+const num_array_bars = 150;
 const max_height_bar = 600;
 
 const primary_color = "turquoise";
 const secondary_color = "red";
 const finish_color = "lawngreen";
 
-const merge_sort_speed = 10;
+const merge_sort_speed = 5;
 const bubble_sort_speed = 3;
 
 export default class SortingVisualizer extends Component {
@@ -19,6 +19,7 @@ export default class SortingVisualizer extends Component {
     super(props);
     this.state = {
       array: [],
+      timeouts: [],
     };
   }
 
@@ -26,15 +27,42 @@ export default class SortingVisualizer extends Component {
     this.resetArray();
   }
 
+  cancelSort() {
+    const buttons = document.getElementsByClassName("button");
+    buttons[0].disabled = false;
+    buttons[1].disabled = false;
+    buttons[2].disabled = false;
+    buttons[3].disabled = true;
+    for (let i = 0; i < this.state.timeouts.length; i++) {
+      clearTimeout(this.state.timeouts[i]);
+    }
+    this.resetArray();
+  }
+
   resetArray() {
+    const buttons = document.getElementsByClassName("button");
+    buttons[0].disabled = false;
+    buttons[1].disabled = false;
+    buttons[2].disabled = false;
+    buttons[3].disabled = true;
+    const arrayBars = document.getElementsByClassName("array-bar");
     const array = [];
     for (let i = 0; i < num_array_bars; i++) {
       array.push(randomIntFromInterval(10, max_height_bar));
     }
     this.setState({ array });
+    for (let i = 0; i < arrayBars.length; i++) {
+      arrayBars[i].style.backgroundColor = primary_color;
+    }
   }
 
   bubbleSort() {
+    const buttons = document.getElementsByClassName("button");
+    buttons[0].disabled = true;
+    buttons[1].disabled = true;
+    buttons[2].disabled = true;
+    buttons[3].disabled = false;
+    const timeouts = [];
     const animations = getBubbleSortAnimations(this.state.array);
     const arrayBars = document.getElementsByClassName("array-bar");
     for (let i = 0; i < animations.length; i++) {
@@ -44,27 +72,49 @@ export default class SortingVisualizer extends Component {
         const barOneStyle = arrayBars[barOneIdx].style;
         const barTwoStyle = arrayBars[barTwoIdx].style;
         const color = i % 3 === 0 ? secondary_color : primary_color;
-        setTimeout(() => {
-          barOneStyle.backgroundColor = color;
-          barTwoStyle.backgroundColor = color;
-        }, i * bubble_sort_speed);
+        timeouts.push(
+          setTimeout(() => {
+            barOneStyle.backgroundColor = color;
+            barTwoStyle.backgroundColor = color;
+          }, i * bubble_sort_speed)
+        );
       } else {
-        setTimeout(() => {
-          const [barOneIdx, newHeight] = animations[i];
-          const barOneStyle = arrayBars[barOneIdx].style;
-          const height = newHeight + "px";
-          barOneStyle.height = height;
-        }, i * bubble_sort_speed);
+        timeouts.push(
+          setTimeout(() => {
+            const [barOneIdx, newHeight] = animations[i];
+            const barOneStyle = arrayBars[barOneIdx].style;
+            const height = newHeight + "px";
+            barOneStyle.height = height;
+          }, i * bubble_sort_speed)
+        );
       }
     }
     for (let i = 0; i < arrayBars.length; i++) {
-      setTimeout(() => {
-        arrayBars[i].style.backgroundColor = finish_color;
-      }, (animations.length + i) * bubble_sort_speed);
+      timeouts.push(
+        setTimeout(() => {
+          arrayBars[i].style.backgroundColor = finish_color;
+        }, animations.length * bubble_sort_speed + i * 2)
+      );
     }
+    timeouts.push(
+      setTimeout(() => {
+        buttons[0].disabled = false;
+        buttons[1].disabled = false;
+        buttons[2].disabled = false;
+        buttons[3].disabled = true;
+      }, animations.length * bubble_sort_speed + arrayBars.length * 2)
+    );
+
+    this.setState({ timeouts: timeouts });
   }
 
   mergeSort() {
+    const buttons = document.getElementsByClassName("button");
+    buttons[0].disabled = true;
+    buttons[1].disabled = true;
+    buttons[2].disabled = true;
+    buttons[3].disabled = false;
+    const timeouts = [];
     const animations = getMergeSortAnimations(this.state.array);
     const arrayBars = document.getElementsByClassName("array-bar");
     for (let i = 0; i < animations.length; i++) {
@@ -74,24 +124,41 @@ export default class SortingVisualizer extends Component {
         const barOneStyle = arrayBars[barOneIdx].style;
         const barTwoStyle = arrayBars[barTwoIdx].style;
         const color = i % 3 === 0 ? secondary_color : primary_color;
-        setTimeout(() => {
-          barOneStyle.backgroundColor = color;
-          barTwoStyle.backgroundColor = color;
-        }, i * merge_sort_speed);
+        timeouts.push(
+          setTimeout(() => {
+            barOneStyle.backgroundColor = color;
+            barTwoStyle.backgroundColor = color;
+          }, i * merge_sort_speed)
+        );
       } else {
-        setTimeout(() => {
-          const [barOneIdx, newHeight] = animations[i];
-          const barOneStyle = arrayBars[barOneIdx].style;
-          const height = newHeight + "px";
-          barOneStyle.height = height;
-        }, i * merge_sort_speed);
+        timeouts.push(
+          setTimeout(() => {
+            const [barOneIdx, newHeight] = animations[i];
+            const barOneStyle = arrayBars[barOneIdx].style;
+            const height = newHeight + "px";
+            barOneStyle.height = height;
+          }, i * merge_sort_speed)
+        );
       }
     }
     for (let i = 0; i < arrayBars.length; i++) {
-      setTimeout(() => {
-        arrayBars[i].style.backgroundColor = finish_color;
-      }, (animations.length + i) * merge_sort_speed);
+      timeouts.push(
+        setTimeout(() => {
+          arrayBars[i].style.backgroundColor = finish_color;
+        }, animations.length * merge_sort_speed + i * 2)
+      );
     }
+    timeouts.push(
+      setTimeout(() => {
+        buttons[0].disabled = false;
+        buttons[1].disabled = false;
+        buttons[2].disabled = false;
+        buttons[3].disabled = true;
+      }, animations.length * merge_sort_speed + arrayBars.length * 2)
+    );
+
+    // eslint-disable-next-line
+    this.state.timeouts = timeouts;
   }
 
   render() {
@@ -117,9 +184,20 @@ export default class SortingVisualizer extends Component {
           }}
         ></div>
         <br></br>
-        <button onClick={() => this.resetArray()}>Generate New Array</button>
-        <button onClick={() => this.mergeSort()}>Merge Sort</button>
-        <button onClick={() => this.bubbleSort()}>Bubble Sort</button>
+        <div className="footer">
+          <button className="button" onClick={() => this.resetArray()}>
+            Generate New Array
+          </button>
+          <button className="button" onClick={() => this.mergeSort()}>
+            Merge Sort
+          </button>
+          <button className="button" onClick={() => this.bubbleSort()}>
+            Bubble Sort
+          </button>
+          <button className="button" onClick={() => this.cancelSort()}>
+            Cancel Sort
+          </button>
+        </div>
       </div>
     );
   }
