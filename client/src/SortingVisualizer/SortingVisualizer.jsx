@@ -12,7 +12,7 @@ const secondary_color = "red";
 const finish_color = "lawngreen";
 
 const merge_sort_speed = 5;
-const bubble_sort_speed = 3;
+const bubble_sort_speed = 0.75;
 
 export default class SortingVisualizer extends Component {
   constructor(props) {
