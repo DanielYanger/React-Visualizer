@@ -3,6 +3,7 @@ import "../App.css";
 import "./SortingVisualizer.css";
 import { getMergeSortAnimations } from "./mergeSort.js";
 import { getBubbleSortAnimations } from "./bubbleSort.js";
+import { getQuickSortAnimations } from "./quickSort.js";
 
 const num_array_bars = 250;
 const max_height_bar = 600;
@@ -212,6 +213,83 @@ export default class SortingVisualizer extends Component {
     this.state.timeouts = timeouts;
   }
 
+  quickSort() {
+    const buttons = document.getElementsByClassName("button");
+    buttons[0].disabled = true; //generate array button
+    buttons[1].disabled = true; //merge sort button
+    buttons[2].disabled = true; //bubble sort button
+    buttons[3].disabled = false; //canel sort button
+
+    //array of all the timeouts for canceling
+    const timeouts = [];
+
+    //list of all of the animations that need to be exectuted
+    const animations = getQuickSortAnimations(this.state.array);
+
+    //list of all the bars of the array to be sorted
+    const arrayBars = document.getElementsByClassName("array-bar");
+
+    //main animation loop
+    for (let i = 0; i < animations.length; i++) {
+      //all animations come in set of 3
+      //1: change color of the compared bars back to secondary color
+      //2: change color of the compared bars back to primary color
+      //3: change the height of one of the bars
+      const isColorChange = i % 4 !== 2 && i % 4 !== 3;
+      //Color changing loop
+      if (isColorChange) {
+        //getting the index of and then style  which bars to change
+        const [barOneIdx, barTwoIdx] = animations[i];
+        const barOneStyle = arrayBars[barOneIdx].style;
+        const barTwoStyle = arrayBars[barTwoIdx].style;
+
+        //the first time is for changing to secondary color, second time is for changing back to primary
+        const color = i % 4 === 0 ? secondary_color : primary_color;
+
+        //adding the timeout to the list so the cancel feature works
+        timeouts.push(
+          setTimeout(() => {
+            barOneStyle.backgroundColor = color;
+            barTwoStyle.backgroundColor = color;
+          }, i * 5)
+        );
+      } else {
+        //pushing a timeout to change the height of the bar
+        timeouts.push(
+          setTimeout(() => {
+            const [barOneIdx, newHeight] = animations[i];
+            const barOneStyle = arrayBars[barOneIdx].style;
+            const height = newHeight + "px";
+            barOneStyle.height = height;
+          }, i * 5)
+        );
+      }
+    }
+
+    //aux loop for changing the color to the finish color after completion
+    for (let i = 0; i < arrayBars.length; i++) {
+      //push the change to the timeout array
+      timeouts.push(
+        setTimeout(() => {
+          arrayBars[i].style.backgroundColor = finish_color;
+        }, animations.length * 5 + i * 2)
+      );
+    }
+
+    //changing the buttons back to enabled
+    timeouts.push(
+      setTimeout(() => {
+        buttons[0].disabled = false;
+        buttons[1].disabled = true;
+        buttons[2].disabled = true;
+        buttons[3].disabled = true;
+      }, animations.length * 5 + arrayBars.length * 2)
+    );
+    //setting the state of the timeouts
+    // eslint-disable-next-line
+    this.state.timeouts = timeouts;
+  }
+
   render() {
     const { array } = this.state;
     return (
@@ -247,6 +325,9 @@ export default class SortingVisualizer extends Component {
           </button>
           <button className="button" onClick={() => this.cancelSort()}>
             Cancel
+          </button>
+          <button className="button" onClick={() => this.quickSort()}>
+            Quick Sort
           </button>
         </div>
       </div>
