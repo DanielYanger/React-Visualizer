@@ -124,13 +124,14 @@ export default class SortingVisualizer extends Component {
     timeouts.push(
       setTimeout(() => {
         buttons[0].disabled = false;
-        buttons[1].disabled = false;
-        buttons[2].disabled = false;
+        buttons[1].disabled = true;
+        buttons[2].disabled = true;
         buttons[3].disabled = true;
       }, animations.length * bubble_sort_speed + arrayBars.length * 2)
     );
     //setting the state of the timeouts
-    this.setState({ timeouts: timeouts });
+    // eslint-disable-next-line
+    this.state.timeouts = timeouts;
   }
 
   mergeSort() {
@@ -201,8 +202,8 @@ export default class SortingVisualizer extends Component {
     timeouts.push(
       setTimeout(() => {
         buttons[0].disabled = false;
-        buttons[1].disabled = false;
-        buttons[2].disabled = false;
+        buttons[1].disabled = true;
+        buttons[2].disabled = true;
         buttons[3].disabled = true;
       }, animations.length * merge_sort_speed + arrayBars.length * 2)
     );
