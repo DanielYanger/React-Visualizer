@@ -30,6 +30,9 @@ export default class SortingVisualizer extends Component {
   }
 
   cancelSort() {
+    // eslint-disable-next-line
+    this.state.isRunning = false;
+
     //sliders
     const sliders = document.getElementsByClassName("slider");
     console.log(sliders);
@@ -74,6 +77,9 @@ export default class SortingVisualizer extends Component {
   }
 
   bubbleSort() {
+    // eslint-disable-next-line
+    this.state.isRunning = true;
+
     //sliders
     const sliders = document.getElementsByClassName("slider");
     sliders[0].disabled = true;
@@ -156,6 +162,9 @@ export default class SortingVisualizer extends Component {
         buttons[2].disabled = true;
         buttons[3].disabled = true;
         buttons[4].disabled = true;
+
+        // eslint-disable-next-line
+        this.state.isRunning = false;
       }, animations.length * this.state.speed + arrayBars.length * 2)
     );
     //setting the state of the timeouts
@@ -164,6 +173,9 @@ export default class SortingVisualizer extends Component {
   }
 
   mergeSort() {
+    // eslint-disable-next-line
+    this.state.isRunning = true;
+
     //sliders
     const sliders = document.getElementsByClassName("slider");
     sliders[0].disabled = true;
@@ -247,6 +259,9 @@ export default class SortingVisualizer extends Component {
         buttons[2].disabled = true;
         buttons[3].disabled = true;
         buttons[4].disabled = true;
+
+        // eslint-disable-next-line
+        this.state.isRunning = false;
       }, animations.length * this.state.speed + arrayBars.length * 2)
     );
     //setting the state of the timeouts
@@ -255,6 +270,9 @@ export default class SortingVisualizer extends Component {
   }
 
   quickSort() {
+    // eslint-disable-next-line
+    this.state.isRunning = true;
+
     //sliders
     const sliders = document.getElementsByClassName("slider");
     sliders[0].disabled = true;
@@ -336,6 +354,9 @@ export default class SortingVisualizer extends Component {
         buttons[2].disabled = true;
         buttons[3].disabled = true;
         buttons[4].disabled = true;
+
+        // eslint-disable-next-line
+        this.state.isRunning = false;
       }, animations.length * this.state.speed + arrayBars.length * 2)
     );
     //setting the state of the timeouts
@@ -344,11 +365,16 @@ export default class SortingVisualizer extends Component {
   }
 
   handleChangeSize = (event, newValue) => {
-    this.setState({ array_size: newValue });
+    console.log(this.state.isRunning);
+    if (!this.state.isRunning) {
+      this.setState({ array_size: newValue });
+    }
   };
 
   handleChangeSpeed = (event, newValue) => {
-    this.setState({ speed: newValue });
+    if (!this.state.isRunning) {
+      this.setState({ speed: newValue });
+    }
   };
 
   render() {
